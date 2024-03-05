@@ -23,6 +23,7 @@ on:
       - bugfix/**
       - hotfix/**
       - feature/**
+      - test/**
     paths-ignore:
       - README.md
       - README.es.md
