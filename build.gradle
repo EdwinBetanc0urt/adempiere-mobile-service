@@ -78,9 +78,11 @@ repositories {
 		// Adempiere GitHub Organization
 		url = 'https://maven.pkg.github.com/solop-develop/adempiere-solop'
 		credentials {
-			// project property, system properrty, enviroment variable
-			username = findProperty("deployUsername") ?: System.properties['deploy.user'] ?: System.getenv("GITHUB_DEPLOY_USER")
-			password = findProperty("deployToken") ?: System.properties['deploy.token'] ?: System.getenv("GITHUB_DEPLOY_TOKEN")
+			// project property, system property, .env project file, system enviroment variable
+			username = findProperty("deployUsername") ?: System.properties['deploy.user'] ?:
+				projectEnv.get("GITHUB_DEPLOY_USER", null) ?: System.getenv("GITHUB_DEPLOY_USER")
+			password = findProperty("deployToken") ?: System.properties['deploy.token'] ?:
+				projectEnv.get("GITHUB_DEPLOY_TOKEN", null) ?: System.getenv("GITHUB_DEPLOY_TOKEN")
 		}
 	}
     maven {
@@ -238,7 +240,7 @@ dependencies {
 
 	//	ADempiere Core + Patches + Features
 	implementation "org.solop.adempiere:adempiere-core:${adempiereCoreVersion}"
-	implementation "com.solop.adempiere.tools:solop-core:core-1.4.4-1.0.3"
+	implementation "com.solop.adempiere.tools:solop-core:core-1.4.4-1.0.5"
 	implementation "com.solop.adempiere.tools:display-definition:core-1.0.0-1.0.0"
 	// Firebase Connector
 	implementation "com.solop.adempiere.tools:adempiere-firebase-connector:core-1.0.0-1.0.0"
