@@ -21,12 +21,12 @@ services:
       timeout: 10s
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      TZ: 'America/Caracas'
-      PGTZ: 'America/Caracas'
+      TZ: "America/Caracas"
+      PGTZ: "America/Caracas"
     networks:
       - shared_network
 
-  adempiere-grpc-server:
+  adempiere-mobile-service:
     image: ${GRPC_SERVER_IMAGE}
     container_name: ${GRPC_SERVER_HOST}
     restart: ${GENERIC_RESTART}
@@ -49,6 +49,7 @@ services:
       # DB_PASSWORD: ${GRPC_SERVER_DB_PASSWORD}
       DB_PASSWORD_FILE: /run/secrets/adempiere_db_password
       JWT_SECRET_KEY: ${GRPC_SERVER_JWT_SECRET_KEY}
+      TZ: "America/Caracas"
     networks:
       - shared_network
 
@@ -65,9 +66,9 @@ services:
      - ${GRPC_PROXY_BACKEND_PORT}:5555
     volumes:
       - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml:ro
-      - ./envoy/definitions/adempiere-mobile-service.pb:/data/adempiere-grpc-server.pb:ro
+      - ./envoy/definitions/adempiere-mobile-service.dsc:/data/adempiere-mobile-service.dsc:ro
     depends_on:
-      - adempiere-grpc-server
+      - adempiere-mobile-service
     networks:
     - shared_network
 
@@ -85,6 +86,7 @@ services:
       ADEMPIERE_DB_NAME: ${ADEMPIERE_ZK_DB_NAME}
       # ADEMPIERE_DB_PASSWORD: ${ADEMPIERE_ZK_DB_PASSWORD}
       ADEMPIERE_DB_PASSWORD_FILE: /run/secrets/adempiere_db_password
+      TZ: "America/Caracas"
     depends_on:
       adempiere-database:
         condition: service_healthy

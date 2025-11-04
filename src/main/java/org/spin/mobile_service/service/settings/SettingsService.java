@@ -28,6 +28,7 @@ import org.compiere.model.MUser;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
+import org.spin.base.Version;
 import org.spin.mobile_service.util.GlobalValues;
 import org.spin.proto.mobile.settings.BarikoiApi;
 import org.spin.proto.mobile.settings.BaseSettings;
@@ -49,24 +50,54 @@ import org.spin.proto.mobile.settings.LocationServices;
 import org.spin.proto.mobile.settings.Project;
 import org.spin.proto.mobile.settings.Staticstics;
 import org.spin.proto.mobile.settings.StaticsticsData;
+import org.spin.proto.mobile.settings.SystemInfo;
 import org.spin.proto.mobile.settings.TimeDefinition;
 import org.spin.proto.mobile.settings.TimeWish;
 import org.spin.proto.mobile.settings.Update;
 import org.spin.proto.mobile.settings.UpdateCount;
 import org.spin.proto.mobile.settings.UpdateData;
+import org.spin.service.grpc.util.value.StringManager;
+import org.spin.service.grpc.util.value.TimeManager;
+import org.spin.service.grpc.util.value.ValueManager;
 
 public class SettingsService {
 	
 	private static String [] PERMISSIONS = {};
 
 	private static String [] EMPLOYEE_TYPES = {
-			"Permanent",
-            "On Probation",
-            "Contractual",
-            "Intern"
-			};
+		"Permanent",
+		"On Probation",
+		"Contractual",
+		"Intern"
+	};
 
 	private static String [] NOTIFICATION_CHANNELS = {};
+
+
+
+	public static SystemInfo.Builder getSystemInfo() {
+		SystemInfo.Builder builder = SystemInfo.newBuilder();
+		// backend info
+		builder.setDateVersion(
+				ValueManager.getProtoTimestampFromTimestamp(
+					TimeManager.getTimestampFromString(
+						Version.DATE_VERSION
+					)
+				)
+			)
+			.setMainVersion(
+				StringManager.getValidString(
+					Version.MAIN_VERSION
+				)
+			)
+			.setImplementationVersion(
+				StringManager.getValidString(
+					Version.IMPLEMENTATION_VERSION
+				)
+			)
+		;
+		return builder;
+	}
 
 	private static TimeWish.Builder getTextToShow() {
 		Calendar calendar = Calendar.getInstance();

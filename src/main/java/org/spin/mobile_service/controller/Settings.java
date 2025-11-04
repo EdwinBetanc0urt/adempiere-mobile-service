@@ -20,29 +20,53 @@ import org.spin.proto.mobile.settings.BaseSettings;
 import org.spin.proto.mobile.settings.GetBaseSettingsRequest;
 import org.spin.proto.mobile.settings.GetDashboardScreenRequest;
 import org.spin.proto.mobile.settings.GetHomeScreenRequest;
+import org.spin.proto.mobile.settings.GetSystemInfoRequest;
 import org.spin.proto.mobile.settings.HomeScreen;
 import org.spin.proto.mobile.settings.DashboardScreen;
 import org.spin.proto.mobile.settings.SettingsServiceGrpc.SettingsServiceImplBase;
+import org.spin.proto.mobile.settings.SystemInfo;
 
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 
 public class Settings extends SettingsServiceImplBase {
-	
+
 	/**	Logger			*/
 	private CLogger log = CLogger.getCLogger(Settings.class);
-	
+
+
+	@Override
+	public void getSystemInfo(GetSystemInfoRequest request, StreamObserver<SystemInfo> responseObserver) {
+		try {
+			SystemInfo.Builder builder = SettingsService.getSystemInfo();
+			responseObserver.onNext(builder.build());
+			responseObserver.onCompleted();
+		} catch (Exception e) {
+			log.warning(e.getLocalizedMessage());
+			e.printStackTrace();
+			responseObserver.onError(
+				Status.INTERNAL
+					.withDescription(e.getLocalizedMessage())
+					.withCause(e)
+					.asRuntimeException()
+			);
+		}
+	}
+
 	@Override
 	public void getBaseSettings(GetBaseSettingsRequest request, StreamObserver<BaseSettings> responseObserver) {
 		try {
 			responseObserver.onNext(SettingsService.getBaseSettings().build());
 			responseObserver.onCompleted();
 		} catch (Exception e) {
-			log.severe(e.getLocalizedMessage());
-			responseObserver.onError(Status.INTERNAL
+			log.warning(e.getLocalizedMessage());
+			e.printStackTrace();
+			responseObserver.onError(
+				Status.INTERNAL
 					.withDescription(e.getLocalizedMessage())
 					.withCause(e)
-					.asRuntimeException());
+					.asRuntimeException()
+			);
 		}
 	}
 	
@@ -52,25 +76,31 @@ public class Settings extends SettingsServiceImplBase {
 			responseObserver.onNext(SettingsService.getDashboardScreen(request));
 			responseObserver.onCompleted();
 		} catch (Exception e) {
-			log.severe(e.getLocalizedMessage());
-			responseObserver.onError(Status.INTERNAL
+			log.warning(e.getLocalizedMessage());
+			e.printStackTrace();
+			responseObserver.onError(
+				Status.INTERNAL
 					.withDescription(e.getLocalizedMessage())
 					.withCause(e)
-					.asRuntimeException());
+					.asRuntimeException()
+			);
 		}
 	}
-	
+
 	@Override
 	public void getHomeScreen(GetHomeScreenRequest request, StreamObserver<HomeScreen> responseObserver) {
 		try {
 			responseObserver.onNext(SettingsService.getHomeScreen(request));
 			responseObserver.onCompleted();
 		} catch (Exception e) {
-			log.severe(e.getLocalizedMessage());
-			responseObserver.onError(Status.INTERNAL
+			log.warning(e.getLocalizedMessage());
+			responseObserver.onError(
+				Status.INTERNAL
 					.withDescription(e.getLocalizedMessage())
 					.withCause(e)
-					.asRuntimeException());
+					.asRuntimeException()
+			);
 		}
 	}
+
 }

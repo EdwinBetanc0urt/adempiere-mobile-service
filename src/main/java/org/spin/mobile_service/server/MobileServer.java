@@ -49,8 +49,9 @@ public class MobileServer {
 	/** Services/Methods allow request without Bearer token validation */
 	private List<String> ALLOW_REQUESTS_WITHOUT_TOKEN = Arrays.asList(
 		// proto package . proto service / proto method
-			"auth.AuthService/RunLogin",
-			"auth.AuthService/RunCheckToken"	
+		"settings.SettingsService/GetSystemInfo",
+		"auth.AuthService/RunLogin",
+		"auth.AuthService/RunCheckToken"
 	);
 
 	/**	Revoke session	*/

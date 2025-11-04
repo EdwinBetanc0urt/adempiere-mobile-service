@@ -4,15 +4,25 @@ option java_package = "org.spin.proto.mobile.settings";
 option java_multiple_files = true;
 
 import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
 
 package settings;
+
+message GetSystemInfoRequest {
+	// empty request
+}
+message SystemInfo {
+	// report service
+	google.protobuf.Timestamp date_version = 1;
+	string main_version = 2;
+	string implementation_version = 3;
+}
 
 message BaseSettings {
 	bool result = 1;
 	string message = 2;
 	BaseSettingsData data = 3;
 }
-
 message GetBaseSettingsRequest {
 
 }
@@ -113,7 +123,6 @@ message DashboardScreenDataValue {
 	string icon = 4;
 	string image_type = 5;
 }
-
 message GetDashboardScreenRequest {
 
 }
@@ -226,12 +235,18 @@ message HomeScreen {
 	string message = 2;
 	HomeScreenData data = 3;
 }
-
 message GetHomeScreenRequest {
 
 }
 
 service SettingsService {
+	// system information
+	rpc GetSystemInfo(GetSystemInfoRequest) returns (SystemInfo) {
+		option (google.api.http) = {
+			get: "/app/system-info"
+		};
+	}
+
 	rpc GetBaseSettings(GetBaseSettingsRequest) returns (BaseSettings) {
 		option (google.api.http) = {
 			get: "/app/base-settings"
