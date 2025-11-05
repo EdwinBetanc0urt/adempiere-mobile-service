@@ -94,6 +94,7 @@ public class Settings extends SettingsServiceImplBase {
 			responseObserver.onCompleted();
 		} catch (Exception e) {
 			log.warning(e.getLocalizedMessage());
+			e.printStackTrace();
 			responseObserver.onError(
 				Status.INTERNAL
 					.withDescription(e.getLocalizedMessage())
