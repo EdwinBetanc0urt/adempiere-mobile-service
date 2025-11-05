@@ -24,9 +24,10 @@ import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 
 public class Adempiere extends AdempieresServiceImplBase {
-	
+
 	/**	Logger			*/
 	private CLogger log = CLogger.getCLogger(Adempiere.class);
+
 
 	@Override
 	public void listOrganizations(ListOrganizationsRequest request, StreamObserver<ListOrganizationsResponse> responseObserver) {
@@ -37,7 +38,8 @@ public class Adempiere extends AdempieresServiceImplBase {
 			);
 			responseObserver.onCompleted();
 		} catch (Exception e) {
-			log.severe(e.getLocalizedMessage());
+			log.warning(e.getLocalizedMessage());
+			e.printStackTrace();
 			responseObserver.onError(
 				Status.INTERNAL
 					.withDescription(e.getLocalizedMessage())
@@ -46,4 +48,5 @@ public class Adempiere extends AdempieresServiceImplBase {
 			);
 		}
 	}
+
 }

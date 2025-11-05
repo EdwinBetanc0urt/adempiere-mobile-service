@@ -28,17 +28,21 @@ public class UpcomingEvents extends UpcomingEventsServiceImplBase {
 	/**	Logger			*/
 	private CLogger log = CLogger.getCLogger(UpcomingEvents.class);
 
+
 	@Override
 	public void getList(GetListRequest request, StreamObserver<GetListResponse> responseObserver) {
 		try {
 			responseObserver.onNext(UpcomingEventsService.getList(request));
 			responseObserver.onCompleted();
 		} catch (Exception e) {
-			log.severe(e.getLocalizedMessage());
-			responseObserver.onError(Status.INTERNAL
+			log.warning(e.getLocalizedMessage());
+			e.printStackTrace();
+			responseObserver.onError(
+				Status.INTERNAL
 					.withDescription(e.getLocalizedMessage())
 					.withCause(e)
-					.asRuntimeException());
+					.asRuntimeException()
+			);
 		}
 	}
 }
