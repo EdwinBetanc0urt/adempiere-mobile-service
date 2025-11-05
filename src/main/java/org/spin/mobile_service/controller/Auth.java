@@ -28,49 +28,60 @@ import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 
 public class Auth extends AuthServiceImplBase {
-	
+
 	/**	Logger			*/
 	private CLogger log = CLogger.getCLogger(Auth.class);
-	
+
+
 	@Override
 	public void runLogin(LoginRequest request, StreamObserver<LoginResponse> responseObserver) {
 		try {
 			responseObserver.onNext(AuthService.login(request));
 			responseObserver.onCompleted();
 		} catch (Exception e) {
-			log.severe(e.getLocalizedMessage());
-			responseObserver.onError(Status.INTERNAL
+			log.warning(e.getLocalizedMessage());
+			e.printStackTrace();
+			responseObserver.onError(
+				Status.INTERNAL
 					.withDescription(e.getLocalizedMessage())
 					.withCause(e)
-					.asRuntimeException());
+					.asRuntimeException()
+			);
 		}
 	}
-	
+
 	@Override
 	public void runCheckToken(CheckTokenRequest request, StreamObserver<CheckTokenResponse> responseObserver) {
 		try {
 			responseObserver.onNext(AuthService.checkToken(request));
 			responseObserver.onCompleted();
 		} catch (Exception e) {
-			log.severe(e.getLocalizedMessage());
-			responseObserver.onError(Status.INTERNAL
+			log.warning(e.getLocalizedMessage());
+			e.printStackTrace();
+			responseObserver.onError(
+				Status.INTERNAL
 					.withDescription(e.getLocalizedMessage())
 					.withCause(e)
-					.asRuntimeException());
+					.asRuntimeException()
+			);
 		}
 	}
-	
+
 	@Override
 	public void runLogout(LogoutRequest request, StreamObserver<LogoutResponse> responseObserver) {
 		try {
 			responseObserver.onNext(AuthService.logout(request));
 			responseObserver.onCompleted();
 		} catch (Exception e) {
-			log.severe(e.getLocalizedMessage());
-			responseObserver.onError(Status.INTERNAL
+			log.warning(e.getLocalizedMessage());
+			e.printStackTrace();
+			responseObserver.onError(
+				Status.INTERNAL
 					.withDescription(e.getLocalizedMessage())
 					.withCause(e)
-					.asRuntimeException());
+					.asRuntimeException()
+			);
 		}
 	}
+
 }

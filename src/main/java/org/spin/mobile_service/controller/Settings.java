@@ -69,7 +69,7 @@ public class Settings extends SettingsServiceImplBase {
 			);
 		}
 	}
-	
+
 	@Override
 	public void getDashboardScreen(GetDashboardScreenRequest request, StreamObserver<DashboardScreen> responseObserver) {
 		try {

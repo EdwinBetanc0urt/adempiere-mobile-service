@@ -24,9 +24,10 @@ import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 
 public class Dashboard extends DashboardServiceImplBase {
-	
+
 	/**	Logger			*/
 	private CLogger log = CLogger.getCLogger(Dashboard.class);
+
 
 	@Override
 	public void getStatistics(GetStatisticsRequest request, StreamObserver<GetStatisticsResponse> responseObserver) {
@@ -34,11 +35,15 @@ public class Dashboard extends DashboardServiceImplBase {
 			responseObserver.onNext(DashboardService.getStatistics(request));
 			responseObserver.onCompleted();
 		} catch (Exception e) {
-			log.severe(e.getLocalizedMessage());
-			responseObserver.onError(Status.INTERNAL
+			log.warning(e.getLocalizedMessage());
+			e.printStackTrace();
+			responseObserver.onError(
+				Status.INTERNAL
 					.withDescription(e.getLocalizedMessage())
 					.withCause(e)
-					.asRuntimeException());
+					.asRuntimeException()
+			);
 		}
 	}
+
 }

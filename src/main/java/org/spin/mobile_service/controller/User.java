@@ -26,35 +26,42 @@ import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 
 public class User extends UserServiceImplBase {
-	
+
 	/**	Logger			*/
 	private CLogger log = CLogger.getCLogger(User.class);
-	
+
+
 	@Override
 	public void getCheckinStatus(GetCheckinStatusRequest request, StreamObserver<GetCheckinStatusResponse> responseObserver) {
 		try {
 			responseObserver.onNext(UserService.getCheckinStatus(request));
 			responseObserver.onCompleted();
 		} catch (Exception e) {
-			log.severe(e.getLocalizedMessage());
-			responseObserver.onError(Status.INTERNAL
+			log.warning(e.getLocalizedMessage());
+			e.printStackTrace();
+			responseObserver.onError(
+				Status.INTERNAL
 					.withDescription(e.getLocalizedMessage())
 					.withCause(e)
-					.asRuntimeException());
+					.asRuntimeException()
+			);
 		}
 	}
-	
+
 	@Override
 	public void setMessageToken(SetMessageTokenRequest request, StreamObserver<SetMessageTokenResponse> responseObserver) {
 		try {
 			responseObserver.onNext(UserService.setMessageToken(request));
 			responseObserver.onCompleted();
 		} catch (Exception e) {
-			log.severe(e.getLocalizedMessage());
+			log.warning(e.getLocalizedMessage());
+			e.printStackTrace();
 			responseObserver.onError(Status.INTERNAL
 					.withDescription(e.getLocalizedMessage())
 					.withCause(e)
-					.asRuntimeException());
+					.asRuntimeException()
+			);
 		}
 	}
+
 }

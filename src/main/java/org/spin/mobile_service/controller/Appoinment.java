@@ -24,21 +24,26 @@ import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 
 public class Appoinment extends AppoinmentServiceImplBase {
-	
+
 	/**	Logger			*/
 	private CLogger log = CLogger.getCLogger(Appoinment.class);
-	
+
+
 	@Override
 	public void getList(GetListRequest request, StreamObserver<GetListResponse> responseObserver) {
 		try {
 			responseObserver.onNext(AppoinmentService.getList(request));
 			responseObserver.onCompleted();
 		} catch (Exception e) {
-			log.severe(e.getLocalizedMessage());
-			responseObserver.onError(Status.INTERNAL
+			log.warning(e.getLocalizedMessage());
+			e.printStackTrace();
+			responseObserver.onError(
+				Status.INTERNAL
 					.withDescription(e.getLocalizedMessage())
 					.withCause(e)
-					.asRuntimeException());
+					.asRuntimeException()
+			);
 		}
 	}
+
 }
