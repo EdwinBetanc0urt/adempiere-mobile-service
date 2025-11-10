@@ -227,6 +227,6 @@ dependencies {
 	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.0'
 	//	ADempiere Core
 	implementation "${baseGroupId}:base:${baseVersion}"
-	implementation "${baseGroupId}:adempiere-grpc-utils:1.6.1"
+	implementation "${baseGroupId}:adempiere-grpc-utils:1.6.2"
 	implementation "${baseGroupId}:human-resource-and-payroll:${baseVersion}"
 }

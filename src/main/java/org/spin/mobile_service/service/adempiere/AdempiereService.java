@@ -27,7 +27,7 @@ import org.spin.proto.mobile.adempiere.ListOrganizationsResponse;
 import org.spin.proto.mobile.adempiere.Organization;
 import org.spin.service.grpc.authentication.SessionManager;
 import org.spin.service.grpc.util.db.LimitUtil;
-import org.spin.service.grpc.util.value.ValueManager;
+import org.spin.service.grpc.util.value.TextManager;
 
 public class AdempiereService {
 
@@ -36,7 +36,7 @@ public class AdempiereService {
 		List<Object> parameters = new ArrayList<Object>();
 
 		//	For search value
-		final String searchValue = ValueManager.getDecodeUrl(
+		final String searchValue = TextManager.getDecodeUrl(
 			request.getSearchValue()
 		);
 		if (!Util.isEmpty(searchValue, true)) {
@@ -94,7 +94,7 @@ public class AdempiereService {
 
 
 	private static Organization.Builder convertOrganization(int organizationId) {
-		if (organizationId <= 0) {
+		if (organizationId < 0) {
 			return Organization.newBuilder();
 		}
 		MOrg organization = MOrg.get(Env.getCtx(), organizationId);
@@ -102,24 +102,24 @@ public class AdempiereService {
 	}
 	private static Organization.Builder convertOrganization(MOrg organization) {
 		Organization.Builder builder = Organization.newBuilder();
-		if (organization == null || organization.getAD_Org_ID() <= 0) {
+		if (organization == null || organization.getAD_Org_ID() < 0) {
 			return builder;
 		}
 		builder.setId(
 				organization.getAD_Org_ID()
 			)
 			.setValue(
-				ValueManager.validateNull(
+				TextManager.getValidString(
 					organization.getValue()
 				)
 			)
 			.setName(
-				ValueManager.validateNull(
+				TextManager.getValidString(
 					organization.getName()
 				)
 			)
 			.setDescription(
-				ValueManager.validateNull(
+				TextManager.getValidString(
 					organization.getDescription()
 				)
 			)

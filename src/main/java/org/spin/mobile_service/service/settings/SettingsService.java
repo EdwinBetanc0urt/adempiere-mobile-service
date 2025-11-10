@@ -56,12 +56,11 @@ import org.spin.proto.mobile.settings.TimeWish;
 import org.spin.proto.mobile.settings.Update;
 import org.spin.proto.mobile.settings.UpdateCount;
 import org.spin.proto.mobile.settings.UpdateData;
-import org.spin.service.grpc.util.value.StringManager;
+import org.spin.service.grpc.util.value.TextManager;
 import org.spin.service.grpc.util.value.TimeManager;
-import org.spin.service.grpc.util.value.ValueManager;
 
 public class SettingsService {
-	
+
 	private static String [] PERMISSIONS = {};
 
 	private static String [] EMPLOYEE_TYPES = {
@@ -79,19 +78,19 @@ public class SettingsService {
 		SystemInfo.Builder builder = SystemInfo.newBuilder();
 		// backend info
 		builder.setDateVersion(
-				ValueManager.getProtoTimestampFromTimestamp(
+				TimeManager.getProtoTimestampFromTimestamp(
 					TimeManager.getTimestampFromString(
 						Version.DATE_VERSION
 					)
 				)
 			)
 			.setMainVersion(
-				StringManager.getValidString(
+				TextManager.getValidString(
 					Version.MAIN_VERSION
 				)
 			)
 			.setImplementationVersion(
-				StringManager.getValidString(
+				TextManager.getValidString(
 					Version.IMPLEMENTATION_VERSION
 				)
 			)
@@ -110,91 +109,115 @@ public class SettingsService {
 		}
 		return TimeWish.newBuilder().setWish("Good Night").setSubTitle("Have a good night").setImage("https://hrm.onesttech.com/assets/app/dashboard/good-night.svg");
 	}
-	
+
 	public static BaseSettings.Builder getBaseSettings() {
 		MUser user = MUser.get(Env.getCtx());
-		MClient client = MClient.get(Env.getCtx(), user.getAD_Client_ID());
-		MCurrency currency = MCurrency.get(Env.getCtx(), client.getC_Currency_ID());
 		
 		// Getting the time zone of calendar
 		BaseSettingsData.Builder data = BaseSettingsData.newBuilder()
-				.setIsAdmin(user.isProjectManager())
-				.setIsHr(true)
-				.setIsManager(true)
-				.setIsFaceRegistered(true)
-				.setMultiCheckin(true)
-				.setLocationBind(false)
-				.setIsIpEnabled(false)
-				//	Departments
-				.addDepartments(KeyValueData.newBuilder().setId(1).setTitle("Management"))
-				.addDepartments(KeyValueData.newBuilder().setId(2).setTitle("IT"))
-				.addDepartments(KeyValueData.newBuilder().setId(3).setTitle("Sales"))
-				//	Designations
-				.addDesignations(KeyValueData.newBuilder().setId(1).setTitle("Admin"))
-				.addDesignations(KeyValueData.newBuilder().setId(2).setTitle("HR"))
-				.addDesignations(KeyValueData.newBuilder().setId(3).setTitle("Staff"))
-				//	Employee types
-				.addAllEmployeeTypes(Arrays.asList(EMPLOYEE_TYPES))
-				//	Permissions
-				.addAllPermissions(Arrays.asList(PERMISSIONS))
-				//	Change this based on time
-				.setTimeWish(getTextToShow())
-//				.setTimeWish(TimeWish.newBuilder().setWish("Good Night").setSubTitle("Have a good night").setImage("https://hrm.onesttech.com/assets/app/dashboard/good-night.svg"))
-//				.setTimeWish(TimeWish.newBuilder().setWish("Good Evening").setSubTitle("Thank you for your hard work today").setImage("https://hrm.onesttech.com/assets/app/dashboard/good-evening.svg"))
-				//	Change by real timezone
-				//	Europe/Tirane
-				.setTimeZone(ZoneId.getAvailableZoneIds().stream().findFirst().get())
+			.setIsAdmin(user.isProjectManager())
+			.setIsHr(true)
+			.setIsManager(true)
+			.setIsFaceRegistered(true)
+			.setMultiCheckin(true)
+			.setLocationBind(false)
+			.setIsIpEnabled(false)
+			//	Departments
+			.addDepartments(KeyValueData.newBuilder().setId(1).setTitle("Management"))
+			.addDepartments(KeyValueData.newBuilder().setId(2).setTitle("IT"))
+			.addDepartments(KeyValueData.newBuilder().setId(3).setTitle("Sales"))
+			//	Designations
+			.addDesignations(KeyValueData.newBuilder().setId(1).setTitle("Admin"))
+			.addDesignations(KeyValueData.newBuilder().setId(2).setTitle("HR"))
+			.addDesignations(KeyValueData.newBuilder().setId(3).setTitle("Staff"))
+			//	Employee types
+			.addAllEmployeeTypes(Arrays.asList(EMPLOYEE_TYPES))
+			//	Permissions
+			.addAllPermissions(Arrays.asList(PERMISSIONS))
+			//	Change this based on time
+			.setTimeWish(getTextToShow())
+			// .setTimeWish(TimeWish.newBuilder().setWish("Good Night").setSubTitle("Have a good night").setImage("https://hrm.onesttech.com/assets/app/dashboard/good-night.svg"))
+			// .setTimeWish(TimeWish.newBuilder().setWish("Good Evening").setSubTitle("Thank you for your hard work today").setImage("https://hrm.onesttech.com/assets/app/dashboard/good-evening.svg"))
+			//	Change by real timezone
+			//	Europe/Tirane
+			.setTimeZone(ZoneId.getAvailableZoneIds().stream().findFirst().get())
+			.setAttendanceMethod("QR")
+			.setDutySchedule(
+				DutySchedule.newBuilder()
+					.setStartTime(TimeDefinition.newBuilder().setHour(16).setMin(55))
+					.setEndTime(TimeDefinition.newBuilder().setHour(17))
+			)
+			.setLocationServices(
+				LocationServices.newBuilder().setGoogle(true)
+			)
+			.setBarikoiApi(BarikoiApi.newBuilder().setStatusId(4))
+			.setBreakStatus(BreakStatus.newBuilder().setStatus("break_out"))
+			.setLocationService(true)
+			.setAppTheme("app_theme_1")
+			.setIsTeamLead(true)
+			.addAllNotificationChannels(Arrays.asList(NOTIFICATION_CHANNELS))
+			.setLiveTracking(LiveTracking.newBuilder())
+		;
+
+		MClient client = MClient.get(Env.getCtx(), user.getAD_Client_ID());
+		MCurrency currency = MCurrency.get(Env.getCtx(), client.getC_Currency_ID());
+		if (currency != null && currency.getC_Currency_ID() > 0) {
+			data
 				//	Change by Client currency symbol
 				.setCurrencySymbol(currency.getCurSymbol())
 				.setCurrencyCode(currency.getISO_Code())
-				.setAttendanceMethod("QR")
-				.setDutySchedule(DutySchedule.newBuilder().setStartTime(TimeDefinition.newBuilder().setHour(16).setMin(55)).setEndTime(TimeDefinition.newBuilder().setHour(17)))
-				.setLocationServices(LocationServices.newBuilder().setGoogle(true))
-				.setBarikoiApi(BarikoiApi.newBuilder().setStatusId(4))
-				.setBreakStatus(BreakStatus.newBuilder().setStatus("break_out"))
-				.setLocationService(true)
-				.setAppTheme("app_theme_1")
-				.setIsTeamLead(true)
-				.addAllNotificationChannels(Arrays.asList(NOTIFICATION_CHANNELS))
-				.setLiveTracking(LiveTracking.newBuilder())
-				;
-		
-		return BaseSettings.newBuilder()
-				.setData(data)
-				.setResult(true)
-				.setMessage("Base settings information");
-	}
+			;
+		}
 	
+		return BaseSettings.newBuilder()
+			.setData(data)
+			.setResult(true)
+			.setMessage("Base settings information")
+		;
+	}
+
+
 	public static DashboardScreen getDashboardScreen(GetDashboardScreenRequest request) {
 		DashboardScreenData.Builder data = DashboardScreenData.newBuilder();
 		AtomicInteger position = new AtomicInteger(1);
-		new Query(Env.getCtx(), I_AD_Form.Table_Name, GlobalValues.COLUMNNAME_MOBILE_IsMobile + " = 'Y' "
-				+ "AND EXISTS(SELECT 1 FROM AD_Form_Access fa WHERE fa.AD_Form_ID = AD_Form.AD_Form_ID AND fa.AD_Role_ID = ?)", null)
-		.setParameters(Env.getAD_Role_ID(Env.getCtx())).getIDsAsList().forEach(formId -> {
-			MForm form = new MForm(Env.getCtx(), formId, null);
-			String slug = form.get_ValueAsString(GlobalValues.COLUMNNAME_MOBILE_Slug);
-			if(!Util.isEmpty(slug)) {
-				String imageUrl = Optional.ofNullable(form.get_ValueAsString(GlobalValues.COLUMNNAME_MOBILE_ImageURL)).orElse("https://www.adempiere.io/assets/icon/logo.png");
-				int extensionIndex = imageUrl.lastIndexOf(".") + 1;
-				String imageType = "png";
-				if(extensionIndex < imageUrl.length()) {
-					imageType = imageUrl.substring(extensionIndex);
-				}
-				data.addData(DashboardScreenDataValue.newBuilder()
+		new Query(
+			Env.getCtx(),
+			I_AD_Form.Table_Name,
+			GlobalValues.COLUMNNAME_MOBILE_IsMobile + " = 'Y' "
+				+ "AND EXISTS(SELECT 1 FROM AD_Form_Access fa WHERE fa.AD_Form_ID = AD_Form.AD_Form_ID AND fa.AD_Role_ID = ?)",
+			null
+		)
+			.setParameters(Env.getAD_Role_ID(Env.getCtx()))
+			.getIDsAsList()
+			.forEach(formId -> {
+				MForm form = new MForm(Env.getCtx(), formId, null);
+				String slug = form.get_ValueAsString(GlobalValues.COLUMNNAME_MOBILE_Slug);
+				if(!Util.isEmpty(slug)) {
+					String imageUrl = Optional.ofNullable(form.get_ValueAsString(GlobalValues.COLUMNNAME_MOBILE_ImageURL)).orElse("https://www.adempiere.io/assets/icon/logo.png");
+					int extensionIndex = imageUrl.lastIndexOf(".") + 1;
+					String imageType = "png";
+					if(extensionIndex < imageUrl.length()) {
+						imageType = imageUrl.substring(extensionIndex);
+					}
+					data.addData(DashboardScreenDataValue.newBuilder()
 						.setName(form.get_Translation(I_AD_Form.COLUMNNAME_Name))
 						.setSlug(slug)
 						.setPosition(position.getAndIncrement())
 						.setIcon(imageUrl)
-						.setImageType(imageType));
-			}
-		});
+						.setImageType(imageType))
+					;
+				}
+			})
+		;
 		return DashboardScreen.newBuilder()
-				.setData(data)
-				.setResult(true)
-				.setMessage("App dashboard screen")
-				.build();
+			.setData(data)
+			.setResult(true)
+			.setMessage("App dashboard screen")
+			.build()
+		;
 	}
-	
+
+
 	public static HomeScreen getHomeScreen(GetHomeScreenRequest request) {
 		Update.Builder projectSummary = Update.newBuilder().addData(UpdateData.newBuilder());
 		//
@@ -221,21 +244,23 @@ public class SettingsService {
 		HomeScreenData.Builder data = HomeScreenData.newBuilder();
 		//	
 		data
-		.setProjectSummary(projectSummary)
-		.setStaticstics(staticstics)
-		.setTasks(tasks)
-		.addProjects(project)
-		.setNotices(notices)
-		.setSupports(supports)
-		.setCalendar(calendar)
-		.setProjectCount(projectCount)
-		.setClientCount(clientCount)
-		.setTaskCount(taskCount)
+			.setProjectSummary(projectSummary)
+			.setStaticstics(staticstics)
+			.setTasks(tasks)
+			.addProjects(project)
+			.setNotices(notices)
+			.setSupports(supports)
+			.setCalendar(calendar)
+			.setProjectCount(projectCount)
+			.setClientCount(clientCount)
+			.setTaskCount(taskCount)
 		;
 		return HomeScreen.newBuilder()
-				.setData(data)
-				.setResult(true)
-				.setMessage("App home screen")
-				.build();
+			.setData(data)
+			.setResult(true)
+			.setMessage("App home screen")
+			.build()
+		;
 	}
+
 }
