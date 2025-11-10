@@ -199,13 +199,14 @@ public class SettingsService {
 					if(extensionIndex < imageUrl.length()) {
 						imageType = imageUrl.substring(extensionIndex);
 					}
-					data.addData(DashboardScreenDataValue.newBuilder()
-						.setName(form.get_Translation(I_AD_Form.COLUMNNAME_Name))
-						.setSlug(slug)
-						.setPosition(position.getAndIncrement())
-						.setIcon(imageUrl)
-						.setImageType(imageType))
-					;
+					data.addData(
+						DashboardScreenDataValue.newBuilder()
+							.setName(form.get_Translation(I_AD_Form.COLUMNNAME_Name))
+							.setSlug(slug)
+							.setPosition(position.getAndIncrement())
+							.setIcon(imageUrl)
+							.setImageType(imageType)
+					);
 				}
 			})
 		;
