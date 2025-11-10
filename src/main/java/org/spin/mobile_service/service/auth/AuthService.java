@@ -36,8 +36,8 @@ import org.spin.service.grpc.util.value.ValueManager;
 public class AuthService {
 	
 	public static CheckTokenResponse checkToken(CheckTokenRequest chekToken) {
-		if(Util.isEmpty(chekToken.getToken())) {
-			throw new AdempiereException("Token is Mandatory");
+		if(Util.isEmpty(chekToken.getToken(), true)) {
+			throw new AdempiereException("@FillMandatory@ Token");
 		}
 		//	
 		
@@ -57,7 +57,7 @@ public class AuthService {
 	
 	
 	public static LoginResponse login(LoginRequest loginRequest) {
-		if(Util.isEmpty(loginRequest.getEmail()) || Util.isEmpty(loginRequest.getPassword())) {
+		if(Util.isEmpty(loginRequest.getEmail(), true) || Util.isEmpty(loginRequest.getPassword(), true)) {
 			throw new AdempiereException("@FillMandatory@ @AD_User_ID@ / @Password@");
 		}
 
