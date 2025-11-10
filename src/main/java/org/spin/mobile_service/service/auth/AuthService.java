@@ -65,7 +65,7 @@ public class AuthService {
 		int userId = login.getAuthenticatedUserId(loginRequest.getEmail(), loginRequest.getPassword());
 		//	Get Values from role
 		if(userId <= 0) {
-			throw new AdempiereException("@AD_User_ID@ / @Password@ @NotFound@");
+			throw new AdempiereException("@AD_User_ID@ / @Password@ / @AD_Role_ID@ / @AD_Org_ID@ @NotFound@");
 		}
 		MUser user = MUser.get(Env.getCtx(), userId);
 		if (user == null) {
